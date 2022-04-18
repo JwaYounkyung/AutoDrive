@@ -7,11 +7,9 @@ import torch.backends.cudnn as cudnn
 import torchvision
 import torchvision.transforms as transforms
 
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
-
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import os
 import argparse
@@ -37,9 +35,10 @@ else:
     device = torch.device("cpu")
 
 # parameter setting
-best_acc = 0  # best test accuracy
+best_acc = 0  
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 batch_size = 128
+epochs = 50
 
 # %%
 # Data Loader
@@ -57,6 +56,7 @@ for label in tr_labels:
     if label not in class_to_idx:
         class_to_idx[label] = idx
         idx += 1
+idx_to_class = {value:key for key,value in class_to_idx.items()}
 
 tr_transform = transforms.Compose([
     transforms.Resize((32, 32)), 
@@ -83,8 +83,10 @@ ts_loader = torch.utils.data.DataLoader(
 # %%
 # Model
 print('==> Building model..')
-net = SimpleDLA()
+# net = SimpleDLA(num_classes=len(class_to_idx))
+net = Simple(num_classes=len(class_to_idx))
 net = net.to(device)
+
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
@@ -93,7 +95,7 @@ if args.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
     assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
-    checkpoint = torch.load('./checkpoint/ckpt.pth')
+    checkpoint = torch.load('Midterm/result/result.pth')
     net.load_state_dict(checkpoint['net'])
     best_acc = checkpoint['acc']
     start_epoch = checkpoint['epoch']
@@ -103,10 +105,10 @@ optimizer = optim.SGD(net.parameters(), lr=args.lr,
                       momentum=0.9, weight_decay=5e-4)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
-
 # %% 
 # Training
 def train(epoch):
+    global best_acc
     print('\nEpoch: %d' % epoch)
     net.train()
     train_loss = 0
@@ -127,44 +129,51 @@ def train(epoch):
 
         utils.progress_bar(batch_idx, len(tr_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
                      % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
-
-
-def test(epoch):
-    global best_acc
-    net.eval()
-    test_loss = 0
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for batch_idx, (inputs, targets) in enumerate(ts_loader):
-            inputs, targets = inputs.to(device), targets.to(device)
-            outputs = net(inputs)
-            loss = criterion(outputs, targets)
-
-            test_loss += loss.item()
-            _, predicted = outputs.max(1)
-            total += targets.size(0)
-            correct += predicted.eq(targets).sum().item()
-
-            utils.progress_bar(batch_idx, len(ts_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                         % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
-
-    # Save checkpoint.
+    
     acc = 100.*correct/total
     if acc > best_acc:
-        print('Saving..')
         state = {
             'net': net.state_dict(),
             'acc': acc,
             'epoch': epoch,
         }
-        if not os.path.isdir('checkpoint'):
-            os.mkdir('checkpoint')
-        torch.save(state, './checkpoint/ckpt.pth')
+
+        torch.save(state, 'Midterm/result/result.pth')
         best_acc = acc
 
-
-for epoch in range(start_epoch, start_epoch+200):
+'''
+for epoch in range(start_epoch, start_epoch+epochs):
     train(epoch)
-    test(epoch)
     scheduler.step()
+'''
+# %%
+def test():
+    net.eval()
+    test_idxes = []
+    test_labels = []
+
+    with torch.no_grad():
+        for batch_idx, (inputs, targets) in enumerate(ts_loader):
+            inputs, targets = inputs.to(device), targets.to(device)
+            outputs = net(inputs)
+
+            _, predicted = outputs.max(1)
+            test_idxes.append(predicted)
+
+    test_idxes = torch.cat(test_idxes)
+
+    for idx in test_idxes:
+        test_labels.append(int(idx_to_class[int(idx)]))
+
+    return test_labels
+
+net.load_state_dict(torch.load('Midterm/result/result.pth',  map_location=device)['net'])
+test_id = pd.read_csv('Midterm/result/results_samples.csv')['imagename']
+test_labels = test()
+
+result_df = pd.DataFrame(
+    {'imagename': test_id,
+     'predicted': test_labels
+    })
+
+result_df.to_csv("Midterm/result/results.csv", index=False)

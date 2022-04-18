@@ -33,6 +33,11 @@ def load_path(filepath, train=True):
     else:
         for data_path in glob.glob(filepath + '/*'):
             image_paths.append(data_path)
+        imagenames = [int(x.split('/')[-1].split('.')[0]) for x in image_paths]
+        imagenames.sort()
+        image_paths = []
+        for imagename in imagenames:
+            image_paths.append(filepath + '/' + str(imagename) + '.jpg')
     
     return image_paths, classes
 

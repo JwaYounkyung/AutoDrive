@@ -11,6 +11,7 @@ from torch.utils.data import Dataset
 import numpy as np
 import pandas as pd
 from PIL import Image
+import matplotlib.pyplot as plt
 
 def set_seed(seed_value=42):
     """Set seed for reproducibility."""
@@ -151,3 +152,9 @@ def progress_bar(current, total, msg=None):
         sys.stdout.write('\n')
     sys.stdout.flush()
 
+
+def graph(train_list, fgname):
+    plt.plot(train_list, label='train')
+    plt.legend()
+    plt.savefig(fgname, dpi=300)
+    plt.clf()

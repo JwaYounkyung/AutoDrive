@@ -38,7 +38,7 @@ else:
 best_acc = 0  
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 batch_size = 128
-epochs = 100
+epochs = 150
 
 # %%
 # Data Loader
@@ -76,9 +76,9 @@ tr_dataset = utils.LandmarkDataset(tr_image_paths, class_to_idx, tr_transform)
 ts_dataset = utils.LandmarkDataset(ts_image_paths, None, ts_transform)
 
 tr_loader = torch.utils.data.DataLoader(
-    tr_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
+    tr_dataset, batch_size=batch_size, shuffle=True)#, num_workers=2)
 ts_loader = torch.utils.data.DataLoader(
-    ts_dataset, batch_size=batch_size, shuffle=False, num_workers=2)
+    ts_dataset, batch_size=batch_size, shuffle=False)#, num_workers=2)
 
 # %%
 # Model
@@ -131,6 +131,7 @@ def train(epoch):
                      % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
     
     acc = 100.*correct/total
+    total_loss = train_loss/(batch_idx+1)
     if acc >= best_acc:
         state = {
             'net': net.state_dict(),
@@ -140,12 +141,19 @@ def train(epoch):
 
         torch.save(state, 'Midterm/result/result.pth')
         best_acc = acc
+    
+    return total_loss, acc
 
+train_loss_list, train_acc_list = [], []
 for epoch in range(start_epoch, start_epoch+epochs):
-    train(epoch)
+    train_loss, train_acc = train(epoch)
+    train_loss_list.append(train_loss)
+    train_acc_list.append(train_acc)
     scheduler.step()
 
 print(f"Training complete! Best train accuracy: {best_acc:.3f}%.")
+utils.graph(train_loss_list, 'Midterm/result/train_loss.png')
+utils.graph(train_acc_list, 'Midterm/result/train_acc.png')
 # %%
 def test():
     net.eval()

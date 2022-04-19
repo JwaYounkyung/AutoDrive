@@ -38,7 +38,7 @@ else:
 best_acc = 0  
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 batch_size = 128
-epochs = 50
+epochs = 100
 
 # %%
 # Data Loader
@@ -76,15 +76,15 @@ tr_dataset = utils.LandmarkDataset(tr_image_paths, class_to_idx, tr_transform)
 ts_dataset = utils.LandmarkDataset(ts_image_paths, None, ts_transform)
 
 tr_loader = torch.utils.data.DataLoader(
-    tr_dataset, batch_size=batch_size, shuffle=True)#, num_workers=2)
+    tr_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
 ts_loader = torch.utils.data.DataLoader(
-    ts_dataset, batch_size=batch_size, shuffle=False)#, num_workers=2)
+    ts_dataset, batch_size=batch_size, shuffle=False, num_workers=2)
 
 # %%
 # Model
 print('==> Building model..')
-# net = SimpleDLA(num_classes=len(class_to_idx))
-net = Simple(num_classes=len(class_to_idx))
+net = SimpleDLA(num_classes=len(class_to_idx))
+#net = Simple(num_classes=len(class_to_idx))
 net = net.to(device)
 
 if device == 'cuda':
@@ -131,7 +131,7 @@ def train(epoch):
                      % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
     
     acc = 100.*correct/total
-    if acc > best_acc:
+    if acc >= best_acc:
         state = {
             'net': net.state_dict(),
             'acc': acc,
@@ -141,11 +141,11 @@ def train(epoch):
         torch.save(state, 'Midterm/result/result.pth')
         best_acc = acc
 
-'''
 for epoch in range(start_epoch, start_epoch+epochs):
     train(epoch)
     scheduler.step()
-'''
+
+print(f"Training complete! Best train accuracy: {best_acc:.3f}%.")
 # %%
 def test():
     net.eval()

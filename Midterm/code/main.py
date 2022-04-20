@@ -76,9 +76,9 @@ tr_dataset = utils.LandmarkDataset(tr_image_paths, class_to_idx, tr_transform)
 ts_dataset = utils.LandmarkDataset(ts_image_paths, None, ts_transform)
 
 tr_loader = torch.utils.data.DataLoader(
-    tr_dataset, batch_size=batch_size, shuffle=True)#, num_workers=2)
+    tr_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
 ts_loader = torch.utils.data.DataLoader(
-    ts_dataset, batch_size=batch_size, shuffle=False)#, num_workers=2)
+    ts_dataset, batch_size=batch_size, shuffle=False, num_workers=2)
 
 # %%
 # Model

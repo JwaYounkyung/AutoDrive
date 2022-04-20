@@ -22,12 +22,17 @@ class BasicBlock(nn.Module):
                           kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(self.expansion*planes)
             )
+        
+        self.dropout1 = nn.Dropout(0.5)
+        self.dropout2 = nn.Dropout(0.5)
 
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
+        out = self.dropout1(out)
         out = self.bn2(self.conv2(out))
         out += self.shortcut(x)
         out = F.relu(out)
+        out = self.dropout2(out)
         return out
 
 
@@ -38,10 +43,12 @@ class Root(nn.Module):
             in_channels, out_channels, kernel_size,
             stride=1, padding=(kernel_size - 1) // 2, bias=False)
         self.bn = nn.BatchNorm2d(out_channels)
+        self.dropout = nn.Dropout(0.5)
 
     def forward(self, xs):
         x = torch.cat(xs, 1)
         out = F.relu(self.bn(self.conv(x)))
+        out = self.dropout(out)
         return out
 
 
@@ -71,19 +78,22 @@ class SimpleDLA(nn.Module):
         self.base = nn.Sequential(
             nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(16),
-            nn.ReLU(True)
+            nn.ReLU(True),
+            nn.Dropout(0.5)
         )
 
         self.layer1 = nn.Sequential(
             nn.Conv2d(16, 16, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(16),
-            nn.ReLU(True)
+            nn.ReLU(True),
+            nn.Dropout(0.5)
         )
 
         self.layer2 = nn.Sequential(
             nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(32),
-            nn.ReLU(True)
+            nn.ReLU(True),
+            nn.Dropout(0.5)
         )
 
         self.layer3 = Tree(block,  32,  64, level=1, stride=1)
@@ -104,6 +114,7 @@ class SimpleDLA(nn.Module):
         out = out.view(out.size(0), -1)
         out = self.linear(out)
         return out
+
 
 class Simple(nn.Module):
     def __init__(self, num_classes=10):

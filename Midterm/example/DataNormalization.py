@@ -1,10 +1,14 @@
-# 
+# 이미지 픽셀의 평균, 표준편차를 계산하여 정규화 하기
+# https://deep-learning-study.tistory.com/475
+
 from torchvision import datasets
 import torchvision.transforms as transforms
 import os
 
 import numpy as np
 import torch
+
+import matplotlib.pyplot as plt
 
 path2data = 'data/'
 
@@ -33,21 +37,3 @@ train_transformer = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize([meanR, meanG, meanB], [stdR, stdG, stdB])
 ])
-
-train_ds.transform = train_transformer
-
-np.random.seed(0)
-torch.manual_seed(0)
-
-grid_size = 4
-rnd_inds = np.random.randint(0, len(train_ds), grid_size)
-print('image indices:', rnd_inds)
-
-x_grid = [train_ds[i][0] for i in rnd_inds]
-y_grid = [train_ds[i][1] for i in rnd_inds]
-
-x_grid = utils.make_grid(x_grid, nrow=4, padding=2)
-print(x_grid.shape)
-
-plt.figure(figsize=(10,10))
-show(x_grid, y_grid)

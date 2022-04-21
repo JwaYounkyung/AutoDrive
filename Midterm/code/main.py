@@ -38,7 +38,7 @@ else:
 best_acc = 0  
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 batch_size = 128
-epochs = 250
+epochs = 200
 
 # %%
 # Data Loader

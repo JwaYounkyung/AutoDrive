@@ -1,0 +1,24 @@
+1. Show the structure of your codes
+
+Midterm/
+├── code
+│   ├── main.py
+│   ├── models.py
+│   └── utils.py
+│   └── dataAnalysis.py
+├── command.txt
+├── mid-term_20214035_YounkyungJwa.docx
+├── data
+│   ├── train
+│   └── test_3000_nolabel
+└── result
+    └── results_samples.csv
+    └── class_distribution.png
+
+
+2. Give the example command to reproduce your result
+
+$ python dataAnalysis.py
+$ python main.py
+
+

@@ -51,7 +51,7 @@ BO_ 81 Vehicle_Info_1: 8 Vector__XXX
  SG_ APS_Feedback : 0|16@1+ (1,0) [0|3800] "" Vector__XXX
  SG_ Brake_ACT_Feedback : 16|16@1+ (1,0) [0|35000] "" Vector__XXX
  SG_ Gear_Shift_Feed : 32|8@1+ (1,0) [0|7] "" Vector__XXX
- SG_ Steering_Angle_Feedback : 40|16@1- (1,-0.1) [-540|540] "" Vector__XXX
+ SG_ Steering_Angle_Feedback : 40|16@1- (-0.1,0) [-540|540] "" Vector__XXX
  SG_ Switch_State_E_Stop : 56|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Switch_State_Auto_Standby : 57|1@1+ (1,0) [0|2] "" Vector__XXX
  SG_ Switch_State_APM_S/W_On : 58|1@1+ (1,0) [0|4] "" Vector__XXX
@@ -60,16 +60,16 @@ BO_ 81 Vehicle_Info_1: 8 Vector__XXX
 
 BO_ 82 Vehicle_Info_2: 8 Vector__XXX
  SG_ Override_Feedback : 0|1@1+ (1,0) [0|6] "" Vector__XXX
- SG_ Vehicle_Speed : 8|16@1+ (1,0) [0|255] "km/h" Vector__XXX
+ SG_ Vehicle_Speed : 8|16@1+ (0.1,0) [0|255] "km/h" Vector__XXX
 
 BO_ 83 Vehicle_Info_3: 8 Vector__XXX
  SG_ RPM : 0|16@1+ (1,0) [0|8000] "" Vector__XXX
 
 BO_ 84 Vehicle_Info_4: 8 Vector__XXX
- SG_ Wheel_Speed_Rear_Right : 0|16@1+ (1,0.1) [0|255] "km/h" Vector__XXX
- SG_ Wheel_Speed_Rear_Left : 16|16@1+ (1,0.1) [0|255] "km/h" Vector__XXX
- SG_ Wheel_Speed_Rear_Left : 32|16@1+ (1,0.1) [0|255] "km/h" Vector__XXX
- SG_ Wheel_Speed_Rear_Right : 48|16@1+ (1,0.1) [0|255] "km/h" Vector__XXX
+ SG_ Wheel_Speed_Rear_Right : 0|16@1+ (0.1,0) [0|255] "km/h" Vector__XXX
+ SG_ Wheel_Speed_Rear_Left : 16|16@1+ (0.1,0) [0|255] "km/h" Vector__XXX
+ SG_ Wheel_Speed_Rear_Left : 32|16@1+ (0.1,0) [0|255] "km/h" Vector__XXX
+ SG_ Wheel_Speed_Rear_Right : 48|16@1+ (0.1,0) [0|255] "km/h" Vector__XXX
 
 
 BA_DEF_  "BusType" STRING ;

@@ -40,9 +40,9 @@ Message(
             ),
             Signal(
                 name='Angular_Speed_CMD',
-                size=(40, 8),
-                scaling=(1, 0),
-                limits=(0, 255),
+                size=(40,8),
+                scaling=(1,0),
+                limits=(0,255),
                 unit="",
                 sigtype=2
             )
@@ -71,17 +71,17 @@ Message(
             ),
             Signal(
                 name='Steering_CMD',
-                size=(32, 16),
-                scaling=(1, 0),
-                limits=(-520, 520),
+                size=(32,16),
+                scaling=(1,0),
+                limits=(-520,520),
                 unit="deg",
                 sigtype=1
             ),
             EnumSignal(
                 name='Gear_Shift_CMD',
-                size=(48, 8),
-                scaling=(1, 0),
-                limits=(0, 7),
+                size=(48,8),
+                scaling=(1,0),
+                limits=(0,7),
                 unit="",
                 enums={'Parking': 0, "Driving": 5, "Neutral": 6, "Reverse": 7},
                 sigtype=102 
@@ -111,62 +111,62 @@ Message(
             ),
             EnumSignal(
                 name='Gear_Shift_Feed',
-                size=(32, 8),
-                scaling=(1, 0),
-                limits=(0, 7),
+                size=(32,8),
+                scaling=(1,0),
+                limits=(0,7),
                 unit="",
                 enums={'Parking': 0, "Driving": 5, "Neutral": 6, "Reverse": 7},
                 sigtype=102
             ),
             Signal(
                 name='Steering_Angle_Feedback',
-                size=(40, 16),
-                scaling=(1, -0.1),
-                limits=(-540, 540),
+                size=(40,16),
+                scaling=(-0.1,0),
+                limits=(-540,540),
                 unit="",
                 sigtype=1
             ),
             EnumSignal(
                 name='Switch_State_E_Stop',
-                size=(56, 1),
-                scaling=(1, 0),
-                limits=(0, 1),
+                size=(56,1),
+                scaling=(1,0),
+                limits=(0,1),
                 unit="",
                 enums={'Off': 0, "Open": 1},
                 sigtype=102
             ),
             EnumSignal(
                 name='Switch_State_Auto_Standby',
-                size=(57, 1),
-                scaling=(1, 0),
-                limits=(0, 2),
+                size=(57,1),
+                scaling=(1,0),
+                limits=(0,2),
                 unit="",
                 enums={'Manual': 0, "Auto": 2},
                 sigtype=102
             ),
             EnumSignal(
                 name='Switch_State_APM_S/W_On',
-                size=(58, 1),
-                scaling=(1, 0),
-                limits=(0, 4),
+                size=(58,1),
+                scaling=(1,0),
+                limits=(0,4),
                 unit="",
                 enums={'Manual': 0, "Auto": 4},
                 sigtype=102
             ),
             EnumSignal(
                 name='Switch_State_ASM_S/W_On',
-                size=(59, 1),
-                scaling=(1, 0),
-                limits=(0, 8),
+                size=(59,1),
+                scaling=(1,0),
+                limits=(0,8),
                 unit="",
                 enums={'Manual': 0, "Auto": 8},
                 sigtype=102
             ),
             EnumSignal(
                 name='Switch_State_AGM_S/W_On',
-                size=(60, 1),
-                scaling=(1, 0),
-                limits=(0, 22),
+                size=(60,1),
+                scaling=(1,0),
+                limits=(0,22),
                 unit="",
                 enums={'Manual': 0, "Auto": 22},
                 sigtype=102
@@ -190,7 +190,7 @@ Message(
             Signal(
                 name='Vehicle_Speed',
                 size=(8,16),
-                scaling=(1,0),
+                scaling=(0.1,0),
                 limits=(0,255),
                 unit="km/h",
                 sigtype=2
@@ -220,7 +220,7 @@ Message(
             Signal(
                 name='Wheel_Speed_Rear_Right', 
                 size=(0,16),
-                scaling=(1,0.1),
+                scaling=(0.1,0),
                 limits=(0,255),
                 unit="km/h",
                 sigtype=2
@@ -228,7 +228,7 @@ Message(
             Signal(
                 name='Wheel_Speed_Rear_Left', 
                 size=(16,16),
-                scaling=(1,0.1),
+                scaling=(0.1,0),
                 limits=(0,255),
                 unit="km/h",
                 sigtype=2
@@ -236,7 +236,7 @@ Message(
             Signal(
                 name='Wheel_Speed_Rear_Left', 
                 size=(32,16),
-                scaling=(1,0.1),
+                scaling=(0.1,0),
                 limits=(0,255),
                 unit="km/h",
                 sigtype=2
@@ -244,7 +244,7 @@ Message(
             Signal(
                 name='Wheel_Speed_Rear_Right', 
                 size=(48,16),
-                scaling=(1,0.1),
+                scaling=(0.1,0),
                 limits=(0,255),
                 unit="km/h",
                 sigtype=2

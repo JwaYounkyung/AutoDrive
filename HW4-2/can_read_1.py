@@ -3,7 +3,7 @@ import can
 from pprint import pprint
 from time import sleep
 
-db = cantools.database.load_file("/home/glad/final_for_class/Santafe_Final.dbc")
+db = cantools.database.load_file("mydbc.dbc")
 
 def can_read (message):
     de_message = db.decode_message(message.arbitration_id, message.data)

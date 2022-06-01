@@ -7,11 +7,19 @@ from pynput import keyboard
 db = cantools.database.load_file("mydbc.dbc")
 can_bus = can.interface.Bus('vcan0', bustype='socketcan')
 
+heartbeat = 0
 accel = 650
 brake = 0
 gear = 0
 steer = 0
 reserve = 0
+
+def Ctrl_CMD (override, heartbeat):
+    ctrl_message = db.get_message_by_name('Control_CMD')
+    ctrl_data = ctrl_message.encode({'Override':override, 'Alive_Count': heartbeat, 'Angular_Speed_CMD':100})
+    ctrl_message_send = can.Message(arbitration_id=ctrl_message.frame_id, data=ctrl_data)
+    can_bus.send(ctrl_message_send,timeout=0.001)
+    sleep(0.02)
 
 def Drv_CMD(accel, brake, steer, gear, reserve):
     ctrl_message = db.get_message_by_name('Driving_CMD')
@@ -21,7 +29,7 @@ def Drv_CMD(accel, brake, steer, gear, reserve):
     # sleep(0.02)
 
 def on_press(key):
-    global accel, brake, steer, gear
+    global heartbeat, accel, brake, steer, gear
 
     try:
         if key.char == 'w':
@@ -51,13 +59,19 @@ def on_press(key):
         elif key.char == 'x':
             if steer > -520:
                 steer -= 1
-                Drv_CMD(accel, brake, steer, gear, reserve)
-        
+                Drv_CMD(accel, brake, steer, gear, reserve)    
     except AttributeError:
         print(key)
+    
+listener = keyboard.Listener(on_press=on_press)
+listener.start()
 
-
-# Collect events until released
-with keyboard.Listener(
-        on_press=on_press) as listener:
-    listener.join()
+while True:
+    if heartbeat < 255:
+            Ctrl_CMD(1, heartbeat)
+            heartbeat += 1
+    else:
+            Ctrl_CMD(1, heartbeat)
+            heartbeat = 0
+    
+    

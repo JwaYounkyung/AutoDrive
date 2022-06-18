@@ -57,6 +57,11 @@ def rescale_bboxes(out_bbox, size):
 
 def detect(im, model, transform):
     img = transform(im).unsqueeze(0)
+    print(img.shape)
+    if img.shape[2] > 1600:
+        img = img[:,:,:1600]
+    if img.shape[3] > 1600:
+        img = img[:,:,:,:1600]
     assert img.shape[-2] <= 1600 and img.shape[-1] <= 1600
 
     outputs = model(img)
@@ -66,7 +71,7 @@ def detect(im, model, transform):
     return probas[keep], bboxes_scaled
 
 #visualize
-def plot_results(pil_img, prob, boxes):
+def plot_results(pil_img, prob, boxes, idx):
     plt.figure(figsize=(16,10))
     plt.imshow(pil_img)
     ax = plt.gca()
@@ -78,32 +83,39 @@ def plot_results(pil_img, prob, boxes):
         ax.text(xmin, ymin, text, fontsize=15,
                 bbox=dict(facecolor='yellow', alpha=0.5))
     plt.axis('off')
-    plt.savefig('Experiment2/result/bounded_waymo.png')
+    plt.savefig('Experiment3/result/waymo' + str(idx) + '.png')
 
-def show_camera_image(camera_image, camera_labels, layout, cmap=None):
+def plot_results_combine(pil_img, prob, boxes, camera_image, camera_labels, idx):
     plt.figure()
-    ax = plt.subplot(*layout)
+    plt.imshow(pil_img)
 
+    ax = plt.gca()
+    for p, (xmin, ymin, xmax, ymax), c in zip(prob, boxes.tolist(), COLORS * 100):
+        ax.add_patch(plt.Rectangle((xmin, ymin), xmax - xmin, ymax - ymin,
+                                   fill=False, color=c, linewidth=3))
+        cl = p.argmax()
+        text = f'{CLASSES[cl]}: {p[cl]:0.2f}'
+        ax.text(xmin, ymin, text, fontsize=15,
+                bbox=dict(facecolor='yellow', alpha=0.5))
+    
+    ax2 = plt.subplot()
     for camera_labels in frame.camera_labels:
         if camera_labels.name != camera_image.name:
             continue
 
-    for label in camera_labels.labels:
-        ax.add_patch(patches.Rectangle(
-            xy=(label.box.center_x - 0.5 * label.box.length,
-                label.box.center_y - 0.5 * label.box.width),
-                width=label.box.length,
-                height=label.box.width,
-                linewidth=1,
-                edgecolor='red',
-                facecolor='none'))
-
-    plt.imshow(tf.image.decode_jpeg(camera_image.image), cmap=cmap)
-    plt.title(open_dataset.CameraName.Name.Name(camera_image.name))
-    plt.grid(False)
+        for label in camera_labels.labels:
+            ax2.add_patch(patches.Rectangle(
+                xy=(label.box.center_x - 0.5 * label.box.length,
+                    label.box.center_y - 0.5 * label.box.width),
+                    width=label.box.length,
+                    height=label.box.width,
+                    linewidth=2,
+                    edgecolor='black',
+                    facecolor='none'))
+    
+    
     plt.axis('off')
-    plt.savefig('Experiment1/result/origin_waymo.png')
-    plt.show()
+    plt.savefig('Experiment3/result/waymo_combine' + str(idx) + '.png')
 # %% 
 # data preprocessing
 FILENAME = 'waymo-od/tutorial/frames'
@@ -128,10 +140,15 @@ detr.eval()
 # Inference
 start = time.time()
 
+idx = 1
 for frame in frames:
-    for index, image in enumerate(frame.images):
+    for i, camera_image in enumerate(frame.images):
+        image = tf.image.decode_png(camera_image.image).numpy()
+        image = Image.fromarray(image)
+
         scores, boxes = detect(image, detr, transform)
-        plot_results(image, scores, boxes)
-        # show_camera_image(image, frame.camera_labels, [3, 3, index+1])
+        plot_results(image, scores, boxes, idx)
+        plot_results_combine(image, scores, boxes, camera_image, frame.camera_labels, idx)
+        idx += 1
 
 print("Inference time :", round(time.time()-start, 3), 'sec')

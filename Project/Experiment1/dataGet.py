@@ -27,9 +27,9 @@ for data in dataset:
 
 print(frame.context)
 
-def show_camera_image(camera_image, camera_labels, layout, cmap=None):
+def show_camera_image(camera_image, camera_labels, cmap=None):
   plt.figure()
-  ax = plt.subplot(*layout)
+  ax = plt.subplot()
 
   for camera_labels in frame.camera_labels:
     if camera_labels.name != camera_image.name:
@@ -50,7 +50,6 @@ def show_camera_image(camera_image, camera_labels, layout, cmap=None):
   plt.grid(False)
   plt.axis('off')
   plt.savefig('Experiment1/result/origin_waymo.png')
-  plt.show()
 
 def camera_image_save(camera_image, cmap=None):
   plt.figure()
@@ -58,14 +57,8 @@ def camera_image_save(camera_image, cmap=None):
   plt.grid(False)
   plt.axis('off')
   plt.savefig('Experiment1/result/waymo.png')
-  plt.show()
-
-# plt.figure(figsize=(25, 20))
-# for index, image in enumerate(frame.images):
-#   show_camera_image(image, frame.camera_labels, [3, 3, index+1])
-# plt.show()
 
 for index, image in enumerate(frame.images):
   camera_image_save(image)
-  show_camera_image(image, frame.camera_labels, [3, 3, index+1])
+  show_camera_image(image, frame.camera_labels)
   break

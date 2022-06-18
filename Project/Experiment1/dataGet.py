@@ -1,4 +1,5 @@
 '''
+Settings
 !rm -rf waymo-od > /dev/null
 !git clone https://github.com/waymo-research/waymo-open-dataset.git waymo-od
 !cd waymo-od && git branch -a
@@ -23,7 +24,7 @@ from waymo_open_dataset.utils import transform_utils
 from waymo_open_dataset.utils import  frame_utils
 from waymo_open_dataset import dataset_pb2 as open_dataset
 
-FILENAME = '/content/waymo-od/tutorial/frames'
+FILENAME = 'waymo-od/tutorial/frames'
 dataset = tf.data.TFRecordDataset(FILENAME, compression_type='')
 for data in dataset:
     frame = open_dataset.Frame()
@@ -61,7 +62,19 @@ def show_camera_image(camera_image, camera_labels, layout, cmap=None):
   plt.grid(False)
   plt.axis('off')
 
-plt.figure(figsize=(25, 20))
+def camera_image_save(camera_image, cmap=None):
+  plt.figure()
+  plt.imshow(tf.image.decode_jpeg(camera_image.image), cmap=cmap)
+  plt.grid(False)
+  plt.axis('off')
+  plt.savefig('Experiment1/result/waymo.png')
+  plt.show()
+
+# plt.figure(figsize=(25, 20))
+# for index, image in enumerate(frame.images):
+#   show_camera_image(image, frame.camera_labels, [3, 3, index+1])
+# plt.show()
 
 for index, image in enumerate(frame.images):
-  show_camera_image(image, frame.camera_labels, [3, 3, index+1])
+  camera_image_save(image)
+  break

@@ -1,9 +1,7 @@
-import matplotlib.pyplot as plt
 import time
-
-from PIL import Image
 import requests
 import matplotlib.pyplot as plt
+from PIL import Image
 
 import torch
 import torchvision.transforms as T
@@ -87,7 +85,7 @@ def plot_results(pil_img, prob, boxes):
         ax.text(xmin, ymin, text, fontsize=15,
                 bbox=dict(facecolor='yellow', alpha=0.5))
     plt.axis('off')
-    plt.savefig('Project/Experiment1/result/bounded_image.png')
+    plt.savefig('Experiment2/result/bounded_image.png')
     plt.show()
 
 url = 'https://news.imaeil.com/inc/photos/2020/11/02/2020110216374231552_l.jpg'
